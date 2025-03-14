@@ -1,6 +1,6 @@
 package com.example.remind.user.entity;
 
-import com.example.remind.post.entity.Post;
+import com.example.remind.follow.entity.Follow;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +22,14 @@ public class User {
     @Column(nullable = false)
     private String password;
     private String phoneNum;
+//    // 내가 팔로우 하는 사람
+//    @OneToMany(mappedBy = "from_user", fetch = FetchType.LAZY)
+//    private List<Follow> followings;
+//    // 나를 팔로우 하는 사람
+//    @OneToMany(mappedBy = "to_user", fetch = FetchType.LAZY)
+//    private List<Follow> followers;
+
+
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Post> posts;
 

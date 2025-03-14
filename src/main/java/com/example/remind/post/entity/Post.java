@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -29,11 +31,19 @@ public class Post extends BaseEntity {
         this.likes--;
     }
 
-    public Post(String title, String content, User user) {
+    public Post(String title, String content, User user, LocalDateTime now) {
+        super(now, now);
         this.title = title;
         this.content = content;
         this.user = user;
     }
+
+    //    public Post(String title, String content, User user) {
+//        this.title = title;
+//        this.content = content;
+//        this.user = user;
+//
+//    }
 
     public void update(String title, String content) {
         this.title = title;

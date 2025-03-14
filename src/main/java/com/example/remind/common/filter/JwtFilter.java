@@ -29,13 +29,20 @@ public class JwtFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        //추가
+//        String method = ((HttpServletRequest) request).getMethod();
 
         String url = httpRequest.getRequestURI();
 
+        // 토큰 없이도 요청을 넘기게 할지 정하는 것
         if (url.startsWith("/auth")) {
             chain.doFilter(request, response);
             return;
         }
+//        if (url.startsWith("/auth") || (url.startsWith("/api/posts") && "GET".equals(method))) {
+//            chain.doFilter(request, response);
+//            return;
+//        }
 
         String bearerJwt = httpRequest.getHeader("Authorization");
 
