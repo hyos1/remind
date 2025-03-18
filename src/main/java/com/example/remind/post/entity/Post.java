@@ -23,13 +23,6 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public void addLike() {
-        this.likes++;
-    }
-
-    public void removeLike() {
-        this.likes--;
-    }
 
     public Post(String title, String content, User user, LocalDateTime now) {
         super(now, now);
@@ -38,15 +31,13 @@ public class Post extends BaseEntity {
         this.user = user;
     }
 
-    //    public Post(String title, String content, User user) {
-//        this.title = title;
-//        this.content = content;
-//        this.user = user;
-//
-//    }
-
-    public void update(String title, String content) {
+    public void update(String title, String content, LocalDateTime updatedAt) {
         this.title = title;
         this.content = content;
+        this.setUpdatedAt(updatedAt);
+    }
+
+    public void updatePostLikes(Integer likes) {
+        this.likes = likes;
     }
 }

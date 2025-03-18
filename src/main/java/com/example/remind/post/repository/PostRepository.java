@@ -9,5 +9,8 @@ import org.springframework.data.repository.query.Param;
 public interface PostRepository extends JpaRepository<Post, Long> {
 //    Page<Post> findUserPosts(Long userId, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
+
     Page<Post> findByUserId(@Param("userId") Long userId, Pageable pageable);
+    // 좋아요 순으로 게시물 정렬
+    Page<Post> findAllByOrderByLikesDesc(Pageable pageable);
 }

@@ -24,29 +24,30 @@ public class PostController {
         return postService.createPost(authUser, dto);
     }
 
-    // 게시물 전체 조회
+    // 게시물 전체 조회, or 특정 사용자의 게시물 전체 조회(수정일 기준)
     @GetMapping
-    public Page<PostResponseDto> findAllPosts(@RequestParam(name = "pageNum", defaultValue = "0") int pageNum,
-                                              @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
-                                              @RequestParam(name = "userId", required = false) Long userId
+    public Page<PostResponseDto> findAllPosts(
+            @RequestParam(name = "pageNum", defaultValue = "0") int pageNum,
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(name = "userId", required = false) Long userId
                                               ) {
         System.out.println("게시글 전체조회 컨트롤러 확인");
         return postService.findAllPosts(pageNum, pageSize, userId);
     }
 
-//    // 특정 사용자의 게시물 전체 조회
-//    @GetMapping("/{friendId}")
-//    public Page<PostResponseDto> findPostsByUserId(
-//            @PathVariable Long friendId,
-//            @RequestParam(defaultValue = "0") int pageNum,
-//            @RequestParam(defaultValue = "10") int pageSize) {
-//        return postService.findPostsByUserId(friendId, pageNum, pageSize);
-//    }
-
+    // 게시물 좋아요 순 정렬
+    @GetMapping("/likes")
+    public Page<PostResponseDto> findAllPostsSortedByLikes(
+            @RequestParam(name = "pageNum", defaultValue = "0") int pageNum,
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+    ) {
+        return postService.findAllPostsSortedByLikes(pageNum, pageSize);
+    }
 
     // 게시물 단건 조회
     @GetMapping("/{postId}")
     public PostResponseDto findPostById(@PathVariable(name = "postId") Long postId) {
+
         return postService.findPostById(postId);
     }
 

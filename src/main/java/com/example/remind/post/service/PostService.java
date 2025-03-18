@@ -4,6 +4,7 @@ import com.example.remind.auth.dto.AuthUser;
 import com.example.remind.post.dto.request.PostRequestDto;
 import com.example.remind.post.dto.response.PostResponseDto;
 import com.example.remind.post.entity.Post;
+import com.example.remind.post.repository.PostLikeRepository;
 import com.example.remind.post.repository.PostRepository;
 import com.example.remind.user.entity.User;
 import com.example.remind.user.repository.UserRepository;
@@ -23,6 +24,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
     // 게시글 생성
     @Transactional
@@ -36,63 +38,55 @@ public class PostService {
         postRepository.save(post);
 
         //좋아요 수까지 포함
-        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), post.getLikes(), post.getUser().getId(), post.getCreatedAt());
+        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), post.getLikes(), post.getUser().getId(), post.getCreatedAt(), post.getUpdatedAt());
     }
 
-    // 게시물 전체 조회, or 특정 사용자의 게시물 전체 조회
+    // 게시물 수정일 기준 전체 조회, or 특정 사용자의 게시물 전체 조회
     @Transactional(readOnly = true)
     public Page<PostResponseDto> findAllPosts(int pageNum, int pageSize, Long userId) {
 
         // 정렬 방식
-        Pageable sortPage = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable sortPage = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        Page<Post> posts;
 
         // 게시물 전체 조회
         if (userId == null) {
             System.out.println("게시물 전체 조회 실행");
+            posts = postRepository.findAll(sortPage);
 
-            Page<Post> posts = postRepository.findAll(sortPage);
-
-            return posts.map(post -> new PostResponseDto(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getLikes(),
-                    post.getUser().getId(),
-                    post.getCreatedAt()
-            ));
         } else {
             // 특정 유저의 게시물 전체 조회
             System.out.println("특정 유저 게시물 전체 조회 실행");
-            Page<Post> posts = postRepository.findByUserId(userId, sortPage);
-
-            return posts.map(post -> new PostResponseDto(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getLikes(),
-                    post.getUser().getId(),
-                    post.getCreatedAt()
-            ));
+            posts = postRepository.findByUserId(userId, sortPage);
         }
+
+        return posts.map(post -> new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getLikes(),
+                post.getUser().getId(),
+                post.getCreatedAt(),
+                post.getUpdatedAt()
+        ));
     }
 
-//    // 특정 사용자의 게시물 전체 조회
-//    @Transactional(readOnly = true)
-//    public Page<PostResponseDto> findPostsByUserId(Long friendId, int pageNum, int pageSize) {
-//        Pageable sortPage = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-//
-//        Page<Post> posts = postRepository.findByUserId(friendId, sortPage);
-//
-//        return posts.map(post -> new PostResponseDto(
-//                post.getId(),
-//                post.getTitle(),
-//                post.getContent(),
-//                post.getLikes(),
-//                post.getUser().getId(),
-//                post.getCreatedAt()
-//        ));
-//    }
+    // 게시물 좋아요 많은 순으로 정렬
+    public Page<PostResponseDto> findAllPostsSortedByLikes(int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
 
+        Page<Post> posts = postRepository.findAllByOrderByLikesDesc(pageable);
+
+        return posts.map(post -> new PostResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getLikes(),
+                post.getUser().getId(),
+                post.getCreatedAt(),
+                post.getUpdatedAt()
+        ));
+    }
 
     // 게시글 단건 조회
     @Transactional(readOnly = true)
@@ -101,7 +95,9 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalStateException("게시글이 존재하지 않습니다.")
         );
-        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), post.getLikes(), post.getUser().getId(), post.getCreatedAt());
+        Integer likeCount = postLikeRepository.countByPost(post);
+
+        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), likeCount, post.getUser().getId(), post.getCreatedAt(), post.getUpdatedAt());
     }
 
     // 게시물 수정
@@ -119,11 +115,10 @@ public class PostService {
         }
 
         // 수정 후 저장
-        post.update(dto.getTitle(), dto.getContent());
+        post.update(dto.getTitle(), dto.getContent(), LocalDateTime.now());
         postRepository.save(post);
 
-        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), post.getLikes(), post.getUser().getId(), post.getCreatedAt());
-
+        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), post.getLikes(), post.getUser().getId(), post.getCreatedAt(), post.getUpdatedAt());
     }
 
     @Transactional
@@ -141,4 +136,5 @@ public class PostService {
 
         postRepository.deleteById(post.getId());
     }
+
 }

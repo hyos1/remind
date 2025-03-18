@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "follows")
 public class Follow extends BaseEntity {
 
     @Id

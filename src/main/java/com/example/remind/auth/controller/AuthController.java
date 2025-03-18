@@ -5,6 +5,7 @@ import com.example.remind.auth.dto.response.AuthResponseDto;
 import com.example.remind.auth.dto.request.AuthLoginRequestDto;
 import com.example.remind.auth.service.AuthService;
 import com.example.remind.common.config.PasswordEncoder;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/signup")
-    public void signup(@RequestBody AuthRequestDto dto) {
+    public void signup(@Valid @RequestBody AuthRequestDto dto) {
         authService.signup(dto);
     }
 

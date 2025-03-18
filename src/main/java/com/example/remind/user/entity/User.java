@@ -2,6 +2,7 @@ package com.example.remind.user.entity;
 
 import com.example.remind.follow.entity.Follow;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ public class User {
     private String name;
     private String nickname;
     @Column(unique = true, nullable = false)
+    @NotNull
     private String email;
     @Column(nullable = false)
     private String password;
