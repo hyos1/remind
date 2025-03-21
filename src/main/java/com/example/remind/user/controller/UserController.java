@@ -18,17 +18,17 @@ public class UserController {
 
     private final UserService userService;
 
-//    //유저 단건 조회 원래 로직
-//    @GetMapping("/{userId}")
-//    public UserResponseDto findUser(@Auth AuthUser authUser, @PathVariable(name = "userId") Long userId) {
-//        return userService.findUser(authUser, userId);
-//    }
-
-    //유저 단건 조회(이름으로)
-    @GetMapping("/{userName}")
-    public UserResponseDto findUser(@Auth AuthUser authUser, @PathVariable(name = "userName") String userName) {
-        return userService.findUser(authUser, userName);
+    //유저 단건 조회 원래 로직
+    @GetMapping("/{userId}")
+    public UserResponseDto findUser(@Auth AuthUser authUser, @PathVariable(name = "userId") Long userId) {
+        return userService.findUser(authUser, userId);
     }
+
+//    //유저 단건 조회(이름으로)
+//    @GetMapping("/{userName}")
+//    public UserResponseDto findUser(@Auth AuthUser authUser, @PathVariable(name = "userName") String userName) {
+//        return userService.findUser(authUser, userName);
+//    }
 
 
 //    //유저 정보 수정 (비밀번호 제외)

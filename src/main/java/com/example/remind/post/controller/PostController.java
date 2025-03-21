@@ -7,8 +7,10 @@ import com.example.remind.post.dto.response.PostResponseDto;
 import com.example.remind.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,6 +44,14 @@ public class PostController {
             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
     ) {
         return postService.findAllPostsSortedByLikes(pageNum, pageSize);
+    }
+
+    // 게시물 기간 조회
+    @GetMapping("/search-by-date")
+    public List<PostResponseDto> findPostsByDate(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        return postService.findPostsByDate(startDate, endDate);
     }
 
     // 게시물 단건 조회

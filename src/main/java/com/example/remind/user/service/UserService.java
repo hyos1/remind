@@ -21,26 +21,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-//    //유저 단건 조회 원래 로직
-//    @Transactional(readOnly = true)
-//    public UserResponseDto findUser(AuthUser authUser, Long userId) {
-//
-//        User user = userRepository.findById(userId).orElseThrow(
-//                () -> new IllegalStateException("해당 사용자가 존재하지 않습니다.")
-//        );
-//
-//        if (user.getEmail().equals(authUser.getEmail())) {
-//            return new UserPrivateResponseDto(user.getId(), user.getName(), user.getNickname(), user.getEmail(), user.getPhoneNum());
-//        }
-//
-//        return new UserPublicResponseDto(user.getId(), user.getName(), user.getNickname(), user.getEmail());
-//    }
-
     //유저 단건 조회(이름으로)
     @Transactional(readOnly = true)
-    public UserResponseDto findUser(AuthUser authUser, String userName) {
+    public UserResponseDto findUser(AuthUser authUser, Long userId) {
 
-        User user = userRepository.findByName(userName).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalStateException("해당 유저가 없습니다")
         );
 
@@ -53,28 +38,6 @@ public class UserService {
         return new UserPublicResponseDto(user.getId(), user.getName(), user.getNickname(), user.getEmail());
     }
 
-
-//
-//    // 바꾼 업데이트 로직
-//    @Transactional
-//    public void update(Long userId, AuthUser authUser, UserUpdateRequestDto dto) {
-//        User user = userRepository.findById(userId).orElseThrow(
-//                () -> new IllegalStateException("해당 유저가 존재하지 않습니다.")
-//        );
-//
-//        // 본인확인
-//        if (!user.getEmail().equals(authUser.getEmail())) {
-//            throw new IllegalStateException("본인만 수정할 수 있습니다.");
-//        }
-//
-//        // 수정할 때 비밀번호 확인
-//        if (!user.getPassword().equals(dto.getPassword())) {
-//            throw new IllegalStateException("비밀번호가 다릅니다.(비밀번호 수정 아님)");
-//        }
-//
-//        user.update(dto.getName(), dto.getNickname(), dto.getEmail(), dto.getPhoneNum());
-//        userRepository.save(user);
-//    }
 
 
     // 유저 업데이트 원래 로직

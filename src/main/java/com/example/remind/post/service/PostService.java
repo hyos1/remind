@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +88,26 @@ public class PostService {
                 post.getCreatedAt(),
                 post.getUpdatedAt()
         ));
+    }
+
+    // 게시물 기간별 검색
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> findPostsByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Post> postsByDate = postRepository.findByCreatedAtBetween(startDate, endDate);
+
+        List<PostResponseDto> dtos = new ArrayList<>();
+        for (Post post : postsByDate) {
+            dtos.add(new PostResponseDto(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getLikes(),
+                    post.getUser().getId(),
+                    post.getCreatedAt(),
+                    post.getUpdatedAt()
+            ));
+        }
+        return dtos;
     }
 
     // 게시글 단건 조회
